@@ -1,7 +1,2 @@
-# bitcamp15
 
-1. send pr to illacceptanything
-2. strippers
-3. blackjack
-4. ???
-5. profit
+A simple starting point for writing 2d games. See tutorial.md for more information.
