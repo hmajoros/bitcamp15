@@ -58,6 +58,7 @@ var player = {
 
 var bullets = [];
 var enemies = [];
+
 var explosions = [];
 
 var lastFire = Date.now();
@@ -82,14 +83,14 @@ function update(dt) {
 
     // It gets harder over time by adding enemies using this
     // equation: 1-.993^gameTime
-    if(Math.random() < 1 - Math.pow(.993, gameTime)) {
+    /*if(Math.random() < 1 - Math.pow(.993, gameTime)) {
         enemies.push({
             pos: [canvas.width,
-                  Math.random() * (canvas.height - 39)],
+                  Math.random() * (0)],
             sprite: new Sprite('img/sprites.png', [0, 78], [80, 39],
                                6, [0, 1, 2, 3, 2, 1])
         });
-    }
+    }*/
 
     checkCollisions();
 
@@ -112,6 +113,8 @@ function handleInput(dt) {
     if(input.isDown('RIGHT') || input.isDown('d')) {
         player.pos[0] += playerSpeed * dt;
     }
+
+    console.log("Player x=" + player.pos[0] + ", y=" + player.pos[1]);
 
     if(input.isDown('SPACE') &&
        !isGameOver &&
@@ -156,16 +159,17 @@ function updateEntities(dt) {
         }
     }
 
-    // Update all the enemies
     for(var i=0; i<enemies.length; i++) {
-        enemies[i].pos[0] -= enemySpeed * dt;
+        //enemies[i].pos[0] -= enemySpeed * dt;
         enemies[i].sprite.update(dt);
 
         // Remove if offscreen
-        if(enemies[i].pos[0] + enemies[i].sprite.size[0] < 0) {
+        /*if(enemies[i].pos[0] + enemies[i].sprite.size[0] < 0) {
             enemies.splice(i, 1);
             i--;
-        }
+        }*/
+        console.log("DOES THIS EXECUTE")
+        console.log(enemies[i]);
     }
 
     // Update all the explosions
@@ -298,7 +302,41 @@ function reset() {
     gameTime = 0;
     score = 0;
 
-    enemies = [];
+    enemies = [
+    {pos: [200, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [300, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [400, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [500, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [600, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [700, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [800, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [900, 0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [1000,0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [1100,0], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+
+    {pos: [200, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [300, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [400, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [500, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [600, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [700, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [800, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [900, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [1000, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [1100, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+
+    {pos: [canvas.width - 100, (0.1 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.2 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.3 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.4 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.5 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.6 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.7 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.8 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, (0.9 * canvas.height) - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])},
+    {pos: [canvas.width - 100, canvas.height - 39], sprite: new Sprite('img/sprites.png', [0, 78], [80, 39], 6, [0, 1, 2, 3, 2, 1])}
+    ];
+
     bullets = [];
 
     player.pos = [50, canvas.height / 2];
