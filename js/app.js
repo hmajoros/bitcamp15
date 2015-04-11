@@ -15,8 +15,8 @@ var requestAnimFrame = (function(){
 // Create the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = $(window).width();
-canvas.height = $(window).height();
+canvas.width = $(window).width() - ($(window).width() % 32);
+canvas.height = $(window).height() - ($(window).height() % 32);
 document.body.appendChild(canvas);
 
 // The main game loop
@@ -34,6 +34,7 @@ function main() {
 
 function init() {
     terrainPattern = ctx.createPattern(resources.get('img/terrain.png'), 'repeat');
+    createTerrain();
 
     document.getElementById('play-again').addEventListener('click', function() {
         reset();
@@ -47,7 +48,8 @@ function init() {
 resources.load([
     'img/sprites.png',
     'img/terrain.png',
-    'img/onion.png'
+    'img/onion.png',
+    'img/spritesheet.png'
 ]);
 resources.onReady(init);
 
@@ -269,6 +271,7 @@ function checkPlayerBounds() {
 function render() {
     ctx.fillStyle = terrainPattern;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    createTerrain();
 
     // Render the player if the game isn't over
     if(!isGameOver) {
@@ -359,3 +362,47 @@ function reset() {
 
     player.pos = [50, canvas.height / 2];
 };
+
+/* Starting all the 2D graphics draws / renders n shit */
+
+function drawImage(img, drawX, drawY, spriteX, spriteY) {
+    ctx.drawImage(img, spriteX * 16, spriteY * 16, 16, 16, drawX * 32, drawY * 32, 32, 32);
+}
+
+function createTerrain() {
+    var img = resources.get('img/spritesheet.png'),
+        maxW = (canvas.width / 32) - 1,
+        maxH = (canvas.height / 32) - 1;
+
+    for (var i = 0; i <= maxW; i++) {
+        for (var j = 0; j <= maxH; j++) {
+
+            if (i == 0) {
+                if (j == 0) drawImage(img, i, j, 0, 0);
+                else if (j == maxH) drawImage(img, i, j, 0, 2);
+                else drawImage(img, i, j, 0, 1);
+            } else if (i == maxW) {
+                if (j == 0) drawImage(img, i, j, 2, 0);
+                else if (j == maxH) drawImage(img, i, j, 2, 2);
+                else drawImage(img, i, j, 2, 1);
+            } else {
+                if (j == 0) drawImage(img, i, j, 1, 0);
+                else if (j == maxH) drawImage(img, i, j, 1, 2);
+                else drawImage(img, i, j, 1, 1);
+            }
+        }
+    }
+
+    var offsetW = (maxW / 2) - 2,
+        offsetH = (maxH / 2) - 2;
+
+    for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < 4; j++) {
+
+            drawImage(img, i + offsetW, j + offsetH, 3, 0);
+        }
+    }
+
+    // ctx.drawImage(img, 16, 16, 16, 16, 32, 32, 16, 16);
+    // drawImage(img, 3, 3, 2, 0);
+}
