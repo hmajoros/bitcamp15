@@ -2,8 +2,7 @@
 // A cross-browser requestAnimationFrame
 // See https://hacks.mozilla.org/2011/08/animating-with-javascript-from-setinterval-to-requestanimationframe/
 var requestAnimFrame = (function(){
-    return 
-        window.requestAnimationFrame       ||
+    return window.requestAnimationFrame       ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
@@ -234,6 +233,11 @@ function checkCollisions() {
 
                 // Remove the bullet and stop this iteration
                 bullets.splice(j, 1);
+
+                showDialog();
+                document.getElementById('close-dialog').addEventListener('click', function() {
+                    closeDialog();
+                });
                 break;
             }
         }
@@ -296,10 +300,22 @@ function gameOver() {
     isGameOver = true;
 }
 
+// Game over
+function showDialog() {
+    document.getElementById('show-dialog').style.display = 'block';
+    document.getElementById('show-dialog-overlay').style.display = 'block';
+}
+
+function closeDialog() {
+    document.getElementById('show-dialog').style.display = 'none';
+    document.getElementById('show-dialog-overlay').style.display = 'none';
+}
+
 // Reset game to original state
 function reset() {
     document.getElementById('game-over').style.display = 'none';
     document.getElementById('game-over-overlay').style.display = 'none';
+
     isGameOver = false;
     gameTime = 0;
     score = 0;
