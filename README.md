@@ -1,2 +1,4 @@
+# LET'S FUCKING LOSE IT
+## GET OUT OF YOUR MIND
 
-A simple starting point for writing 2d games. See tutorial.md for more information.
+Restarting bc games suck
