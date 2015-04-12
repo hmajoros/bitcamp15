@@ -1,6 +1,6 @@
 
 (function() {
-    function Sprite(url, pos, size, speed, frames, dir, once) {
+    function Sprite(url, pos, size, speed, frames, dir, once, dialog) {
         this.pos = pos;
         this.size = size;
         this.speed = typeof speed === 'number' ? speed : 0;
@@ -9,6 +9,7 @@
         this.url = url;
         this.dir = dir || 'horizontal';
         this.once = once;
+        this.dialog = dialog;
     };
 
     Sprite.prototype = {

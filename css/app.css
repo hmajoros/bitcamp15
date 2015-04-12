@@ -74,7 +74,7 @@ canvas {
 #show-dialog, #show-dialog-overlay {
     margin: auto;
     width: 512px;
-    height: 480px;
+    height: 200px;
     position: absolute;
     top: 0;
     left: 0;
