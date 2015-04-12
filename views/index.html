@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  head
+    link(href='http://fonts.googleapis.com/css?family=Raleway',rel='stylesheet',type='text/css')
+    script(type='text/javascript' src='http://code.jquery.com/jquery-1.4.2.min.js').
+    script(type='text/javascript').
+      function getData(keyword,image){
+        api_key = "zffeom1dp446qx4c0mj1hc1m";
+        terms = keyword;
+        etsyURL = "https://openapi.etsy.com/v2/listings/active.js"+"?keywords="+terms+"&limit=1&Images:1"+"&api_key="+api_key;
+        $.ajax({
+          url: etsyURL,
+          dataType: 'jsonp',
+          success: function(data) {
+            if (data.ok) {
+              if (data.count > 0) {
+                $.each(data.results,function(i,item){
+                  $(image).wrap(
+                    "<a href='" + item.url + "'></a>"
+                  );
+                });
+              }
+            } else {
+              alert("merp");
+            }
+          }
+        });
+        return false;
+      }
+
+  body(style="background-color:black; color:white;margin:0px auto;text-align:center;font-family:'Raleway',sans-serif;")
+  h1(style="font-size:48px;")= title
+  p(style="font-size:24px;") Welcome to #{title}
+  
+  div(id = "etsy-images")
+    img(id = "image-1", src= "#{img1}")
+    img(id = "image-2", src= "#{img2}")
+    img(id = "image-3", src= "#{img3}")
+    br
+    img(id = "image-4", src= "#{img4}")
+    img(id = "image-5", src= "#{img5}")
+    img(id = "image-6", src= "#{img6}")
+
+  script(type='text/javascript').
+    getData("#{rand1}","#image-1");
+    getData("#{rand2}","#image-2");
+    getData("#{rand3}","#image-3");
+    getData("#{rand4}","#image-4");
+    getData("#{rand5}","#image-5");
+    getData("#{rand6}","#image-6");
