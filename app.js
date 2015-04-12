@@ -12,7 +12,7 @@ var twitterAPI = require('node-twitter-api');
 var twitter = new twitterAPI({
     consumerKey: 'CFRzw4QBDkxDua8SFmbKuKqlh',
     consumerSecret: '2b5ZBt5tRRysTPQpLxG78u6wTjFRog1H68AyZNFyaiyMj5TsHn',
-    callback: 'http://127.0.0.1:3000/login'
+    callback: 'http://127.0.0.1:3000/results'
 });
 
 // uncomment after placing your favicon in /public
@@ -30,6 +30,9 @@ app.use(session({
 
 var rToken = '';
 var rTokenSecret = '';
+var aToken = '';
+var aTokenSecret = '';
+var username = '';
 
 var requestToken = function(req, res, next) {
     twitter.getRequestToken(function(error, requestToken, requestTokenSecret, results){
@@ -46,7 +49,22 @@ var requestToken = function(req, res, next) {
     });
 };
 
-var accessToken = function(req,res,next) {
+function List(id,slug) {
+    this._id = id;
+    this.slug = slug;
+    this.tweets = [];
+}
+
+function Tweet(name,text,date,imageURL){
+    this.name = name;
+    this.text = text;
+    this.date = date;
+    this.imageURL = imageURL;
+}
+
+var myLists = [];
+
+var accessToken = function(req,res,next,callback) {
     if(!req.query.oauth_token || !req.query.oauth_verifier) {
         res.sendFile(__dirname + '/views/error.html');
     }
@@ -61,6 +79,9 @@ var accessToken = function(req,res,next) {
             error = JSON.stringify(error);
             console.log("Error getting Access token : " + error);
         } else {
+            aToken = accessToken;
+            aTokenSecret = accessTokenSecret;
+
             console.log("Authorized");
             twitter.verifyCredentials(accessToken, accessTokenSecret, function(error, data, results) {
                 if(error) {
@@ -68,11 +89,64 @@ var accessToken = function(req,res,next) {
                     console.log("Error getting User info : " + error);
                 } else {
                     console.log("Logged in as " + data.screen_name)
+                    username = data.screen_name;
                 }
             });
+            callback();
         }
     });
 };
+
+var getLists = function(req,res,next,callback){
+    //API call to get the ids and names of a user's lists
+    twitter.lists("list",{
+            screen_name: username
+        },
+        aToken,
+        aTokenSecret,
+        function(error,data,response) {
+            if(error) {
+                error = JSON.stringify(error);
+                console.log("Error getting List info : " + error);
+            } else {
+                for (var i=0;i<data.length;i++) {
+                    var l = new List(data[i].id,data[i].slug);
+                    myLists.push(l);
+                    console.log(myLists[i]);
+                }
+                callback();
+            }
+        }
+    );
+};
+
+var getTweets = function(req,res,next,callback) {
+    if (!results.length === 0) {
+        for(var i=0;i<results.length;i++) {
+            twitter.lists("statuses",{
+                    list_id: results[i]._id,
+                    slug: results[i].slug
+                },
+                aToken,
+                aTokenSecret,
+                function(error,data,response) {
+                    if(error) {
+                        error = JSON.stringify(error);
+                        console.log("Error getting Tweet info : " + error);
+                    } else {
+                        console.log(JSON.stringify(data));
+                        /*console.log("Tweet: " data[0].text + 
+                            "\n Tweeted by: " + data[0].user.name + 
+                            "\n Tweeted at: " + data[0].created_at +
+                            "\n Image URL: " + data[0].user.profile_image_url
+                        );*/
+                    } 
+                }
+            );
+        }
+        callback();
+    } else { console.log("lol");}
+}
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -81,9 +155,14 @@ app.get('/', function (req, res, next) {
     //res.sendFile(__dirname + '/views/index.html');
 });
 
-app.get('/login', function (req, res, next) {
-    accessToken(req,res, next);
-    res.sendFile(__dirname + '/views/login.html');
+app.get('/results', function (req, res, next) {
+    accessToken(req,res,next, function(){
+        getLists(req,res, next,function(){
+            getTweets(req,res,next,function(){
+                res.sendFile(__dirname + '/views/results.html');
+            });
+        });
+    });
 });
 
 // catch 404 and forward to error handler

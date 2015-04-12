@@ -1,5 +1,6 @@
-.DS_Store
+.gitignore
 npm-debug.log
-test.html
 
-.git/
+list.html
+test.html
+tweets.html
